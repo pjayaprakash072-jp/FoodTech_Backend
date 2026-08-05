@@ -35,4 +35,22 @@ const vendorRegister = async (req,res)=>{
 
 }
 
-module.exports = {vendorRegister}
+
+const vendorLogin = async(req,res)=>{
+    const{email, password} = req.body;
+
+    try{
+        
+        const vendor = await Vendor.findOne({email})
+        if(!vendor || !(await bcrypt.compare(password, vendor.password))){
+            return res.status(401).json({message: "Invalid username or password"})
+        }
+
+        res.status(200).json({message: "vendor login successfully"})
+        console.log(email)
+    }catch(err){
+        res.status(500).json({error: "Internal server error"})
+        console.log("Error", err)
+    }
+}
+module.exports = {vendorRegister ,vendorLogin}
