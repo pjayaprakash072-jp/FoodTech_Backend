@@ -1,6 +1,8 @@
 const express = require('express') 
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
+const vendorRoutes = require('./routes/vendorRoutes')
+// const bodyParser = require('body-parser')
 
 
 const app = express();
@@ -15,6 +17,16 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err)=>{
         console.log("Error : " , err)
     })
+
+    app.use(express.json())
+    // in the same way we can use body-parser to allow json
+    // app.use(bodyParser.json())
+// middleware for vendor Routes
+    app.use('/vendor',vendorRoutes)
+
+
+
+
 
 app.listen(port , ()=>{
     console.log(`Server is running at port ${port}`);
