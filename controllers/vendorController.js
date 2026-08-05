@@ -1,7 +1,11 @@
 const Vendor = require('../models/Vendor');
-const jst = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
+const dotEnv = require('dotenv')
 
+dotEnv.config();
+
+const secretkey = process.env.WhatIsYourName;
 
 const vendorRegister = async (req,res)=>{
     const {username, email , password} = req.body;
@@ -46,7 +50,18 @@ const vendorLogin = async(req,res)=>{
             return res.status(401).json({message: "Invalid username or password"})
         }
 
-        res.status(200).json({message: "vendor login successfully"})
+        // token generation.
+        const token = jwt.sign(
+            {
+                vendorId : vendor._id
+            },
+            secretkey,
+            {expiresIn : "1h"} // optional
+        )
+
+
+
+        res.status(200).json({message: "vendor login successfully", token})
         console.log(email)
     }catch(err){
         res.status(500).json({error: "Internal server error"})
