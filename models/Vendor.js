@@ -1,6 +1,7 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const RGroup = require('./RestaurantGroup');
 
-const vendorschema = mongoose.Schema(
+const vendorschema =new mongoose.Schema(
     {
         username:{
             type:String,
@@ -14,7 +15,13 @@ const vendorschema = mongoose.Schema(
         password:{
             type:String,
             required:true
-        }
+        },
+        RGroup:[
+            {
+                type:mongoose.Schema.ObjectId,
+                ref:'RGroup'
+            }
+        ]
     }
 )
 
