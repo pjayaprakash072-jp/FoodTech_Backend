@@ -2,54 +2,67 @@ const mongoose = require('mongoose')
 
 const RGroupSchema = new mongoose.Schema(
     {
-        RGroupName:{
-            type:String,
-            required:true,
-            unique:true
+        // Name of the restaurant group
+        RGroupName: {
+            type: String,
+            required: true,
+            unique: true
         },
-        area:{
-            type:String,
-            required:true
-        },
-        category:{
-            type:[
-                {
-                    type:String,
-                    enum:['veg','non-veg']
 
-                }
-            ]
+        // Area where the restaurant group is located
+        area: {
+            type: String,
+            required: true
         },
-        region:{
-            type:[
+
+        // Food category (Veg or Non-Veg)
+        category: {
+            type: [
                 {
-                    type:String,
-                    enum: [
-                            "Bakery",
-                            "Fast Food",
-                            "Italian",
-                            "Chinese",
-                            "Indian",
-                            "Desserts"
-                            ]
+                    type: String,
+                    enum: ['veg', 'non-veg']
                 }
             ]
         },
-        offer:{
-            type:String
+
+        // Cuisine types offered
+        region: {
+            type: [
+                {
+                    type: String,
+                    enum: [
+                        "Bakery",
+                        "Fast Food",
+                        "Italian",
+                        "Chinese",
+                        "Indian",
+                        "Desserts"
+                    ]
+                }
+            ]
         },
-        image:{
-            type:String
+
+        // Special offer or discount
+        offer: {
+            type: String
         },
-        vendor:[
+
+        // Restaurant image path or URL
+        image: {
+            type: String
+        },
+
+        // References the vendor(s) who own this restaurant group
+        vendor: [
             {
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'vendor'
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'vendor'
             }
         ]
     }
 )
 
-const RGroup = mongoose.model('RGroup',RGroupSchema);
+const RGroup = mongoose.model('RGroup', RGroupSchema);
 
+// Export the RGroup model
 module.exports = RGroup;

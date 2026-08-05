@@ -1,42 +1,49 @@
-const express = require('express') 
+const express = require('express')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const vendorRoutes = require('./routes/vendorRoutes')
 const rgroupRoutes = require('./routes/rgroupRoutes')
 // const bodyParser = require('body-parser')
 
-
 const app = express();
 
-dotenv.config()
-const port = process.env.PORT
+// Load environment variables from .env file
+dotenv.config();
 
+const port = process.env.PORT;
+
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-    .then(()=>{
+    .then(() => {
         console.log("mongodb connected successfully!")
     })
-    .catch((err)=>{
-        console.log("Error : " , err)
+    .catch((err) => {
+        console.log("Error : ", err)
     })
 
-    app.use(express.json())
-    // in the same way we can use body-parser to allow json
-    // app.use(bodyParser.json())
-// middleware for vendor Routes
-    app.use('/vendor',vendorRoutes)
-    app.use('/rgroup',rgroupRoutes  )
+// Middleware to parse JSON data
+app.use(express.json());
 
+// Alternatively, body-parser can also be used
+// app.use(bodyParser.json())
 
+// Vendor routes
+app.use('/vendor', vendorRoutes);
 
+// Restaurant Group routes
+app.use('/rgroup', rgroupRoutes);
 
-
-app.listen(port , ()=>{
+// Start the server
+app.listen(port, () => {
     console.log(`Server is running at port ${port}`);
 })
 
-app.get('/home', (req,res)=>{
+// Home route
+app.get('/home', (req, res) => {
     res.send("welcome to user")
 })
-app.get('/', (req,res)=>{
+
+// Default route
+app.get('/', (req, res) => {
     res.send("<h1> welcome to Foodtech </h1>")
 })

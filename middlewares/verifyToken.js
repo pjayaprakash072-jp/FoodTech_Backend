@@ -4,24 +4,37 @@ const dotEnv = require('dotenv')
 
 dotEnv.config();
 
+// Secret key used to verify JWT token
 const secretekey = process.env.WhatIsYourName;
 
-const verifyToken = async(req,res,next)=>{
+// Middleware to verify the vendor's token
+const verifyToken = async (req, res, next) => {
+
+    // Get token from request headers
     const token = req.headers.token;
 
-    if(!token){
-        return res.status(400).json({error: "Token is required"})
+    // Check if token is provided
+    if (!token) {
+        return res.status(400).json({ error: "Token is required" })
     }
 
     try {
-        const decoded = jwt.verify(token,secretekey);
-        const vendor = await Vendor.findById(decoded.vendorId)
-        req.vendorId = vendor._id// _id is added ot req obj because we are gettign vendor doc in RGroupController by this vendorId.
-        next()
+        // Verify and decode the token
+        const decoded = jwt.verify(token, secretekey);
+
+        // Find the vendor using the decoded vendorId
+        const vendor = await Vendor.findById(decoded.vendorId);
+
+        // Store vendor ID in the request object for later use
+        req.vendorId = vendor._id;
+
+        // Move to the next middleware/controller
+        next();
+
     } catch (error) {
-        console.log("Error" , error);
-        res.status(500).json({error:"Internal Server Error"})
+        console.log("Error", error);
+        res.status(500).json({ error: "Internal Server Error" })
     }
 }
 
-module.exports = verifyToken
+module.exports = verifyToken;

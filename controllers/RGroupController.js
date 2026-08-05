@@ -3,14 +3,15 @@ const Vendor = require('../models/Vendor')
 const multer = require('multer')
 const path = require('path')
 
-
-// Storage Configuration
+// Storage configuration for uploaded images
 const storage = multer.diskStorage({
 
+    // Folder where images will be stored
     destination: function (req, file, cb) {
         cb(null, "uploads/");
     },
 
+    // Generate a unique filename
     filename: function (req, file, cb) {
 
         const uniqueName = Date.now() + path.extname(file.originalname);
@@ -19,42 +20,56 @@ const storage = multer.diskStorage({
     }
 
 });
+
+// Configure multer with the storage settings
 const upload = multer({
     storage: storage
 });
 
-const addRGroup = async (req,res)=>{
+// Controller to add a new Restaurant Group
+const addRGroup = async (req, res) => {
     try {
-            const {RGroupName, area, category, region, offer} = req.body;
 
-    const image = req.file?req.file.filename : undefined;
+        // Get restaurant details from request body
+        const { RGroupName, area, category, region, offer } = req.body;
 
-    const vendor = await Vendor.findById(req.vendorId)
-    if(!vendor){
-        return res.status(404).json({message: "vendor not found"})
-    }
-    const rgroup = new RGroup(
-        {
-            RGroupName, 
-            area, 
+        // Get uploaded image filename (if any)
+        const image = req.file ? req.file.filename : undefined;
+
+        // Find the logged-in vendor
+        const vendor = await Vendor.findById(req.vendorId);
+
+        if (!vendor) {
+            return res.status(404).json({ message: "vendor not found" });
+        }
+
+        // Create a new Restaurant Group
+        const rgroup = new RGroup({
+            RGroupName,
+            area,
             category,
             region,
             offer,
-            image , 
-            vendor:vendor._id
-        }
-    )
+            image,
+            vendor: vendor._id
+        });
 
-    const savergroup = await rgroup.save();
-    vendor.RGroup.push(savergroup);
-    await vendor.save();
-    res.status(200).json({message: "Restaurant group added successfully"})
+        // Save Restaurant Group to the database
+        const savergroup = await rgroup.save();
+
+        // Add the Restaurant Group reference to the vendor
+        vendor.RGroup.push(savergroup);
+        await vendor.save();
+
+        res.status(200).json({ message: "Restaurant group added successfully" });
+
     } catch (error) {
-        res.status(500).json({error: "Internal server error"})
-        console.log("Error", error)
+        res.status(500).json({ error: "Internal server error" });
+        console.log("Error", error);
     }
 }
 
 module.exports = {
-    addRGroup:[upload.single('image') , addRGroup]
+    // Upload image first, then execute addRGroup controller
+    addRGroup: [upload.single('image'), addRGroup]
 }

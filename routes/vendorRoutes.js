@@ -4,7 +4,11 @@ const express = require('express')
 
 const router = express.Router();
 
-router.post('/register' , vendorController.vendorRegister)
-router.post('/login',vendorController.vendorLogin)
+// Route for vendor registration
+router.post('/register', vendorController.vendorRegister);
 
+// Route for vendor login
+router.post('/login', vendorController.vendorLogin);
+
+// Export the router
 module.exports = router;
