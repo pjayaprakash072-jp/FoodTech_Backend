@@ -38,6 +38,9 @@ const RGroupSchema = new mongoose.Schema(
         offer:{
             type:String
         },
+        image:{
+            type:String
+        },
         vendor:[
             {
                 type:mongoose.Schema.Types.ObjectId,

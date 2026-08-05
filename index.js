@@ -2,6 +2,7 @@ const express = require('express')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const vendorRoutes = require('./routes/vendorRoutes')
+const rgroupRoutes = require('./routes/rgroupRoutes')
 // const bodyParser = require('body-parser')
 
 
@@ -23,6 +24,7 @@ mongoose.connect(process.env.MONGO_URI)
     // app.use(bodyParser.json())
 // middleware for vendor Routes
     app.use('/vendor',vendorRoutes)
+    app.use('/rgroup',rgroupRoutes  )
 
 
 

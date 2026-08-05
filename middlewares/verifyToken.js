@@ -1,4 +1,4 @@
-const vendor = require('../models/Vendor')
+const Vendor = require('../models/Vendor')
 const jwt = require('jsonwebtoken')
 const dotEnv = require('dotenv')
 
@@ -17,7 +17,7 @@ const verifyToken = async(req,res,next)=>{
         const decoded = jwt.verify(token,secretekey);
         const vendor = await Vendor.findById(decoded.vendorId)
         req.vendorId = vendor._id// _id is added ot req obj because we are gettign vendor doc in RGroupController by this vendorId.
-        next();
+        next()
     } catch (error) {
         console.log("Error" , error);
         res.status(500).json({error:"Internal Server Error"})
