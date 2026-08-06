@@ -9,4 +9,6 @@ const { route } = require('./vendorRoutes');
 
 router.post('/add-product/:rgid',productController.addProduct)
 
+router.get('/:rgid/products',productController.getProductByRGroup)
+
 module.exports = router

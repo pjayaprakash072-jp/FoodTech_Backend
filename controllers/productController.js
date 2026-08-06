@@ -29,9 +29,9 @@ const upload = multer({
 // Controller to add a new Restaurant Group
 
 const addProduct = async (req, res)=>{
-    const rgroupid = req.params.rgid;
-
+    
     try {
+        const rgroupid = req.params.rgid;
         const {productName, price, category, bestSeller, description} = req.body;
 
         const image = req.file ? req.file.filename : undefined;
@@ -56,6 +56,26 @@ const addProduct = async (req, res)=>{
     }
 }
 
+const getProductByRGroup = async(req,res)=>{ 
+    try {
+        const rgid = req.params.rgid;
+
+        const rgroup = await RGroup.findById(rgid);
+        if(!rgroup){
+            return res.status(400).json({message:"Restaurant group is not found"});
+        }
+
+        const RestairamtName = rgroup.RGroupName;
+        const products = await Product.find({RGroup : rgid})
+        res.status(200).json({RestairamtName,products})
+        
+    } catch (error) {
+        res.status(500).json({error:"Internal server erro"})
+        console.log("Error",error)
+        
+    }
+}
+
 module.exports = {
-    addProduct: [upload.single("image"), addProduct]
+    addProduct: [upload.single("image"), addProduct],getProductByRGroup
 }
