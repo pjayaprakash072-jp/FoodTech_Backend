@@ -5,6 +5,7 @@ const vendorRoutes = require('./routes/vendorRoutes')
 const rgroupRoutes = require('./routes/rgroupRoutes')
 const productRoutes = require('./routes/productRoutes')
 // const bodyParser = require('body-parser')
+const path = require('path')
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.use('/vendor', vendorRoutes);
 // Restaurant Group routes
 app.use('/rgroup', rgroupRoutes);
 app.use('/product',productRoutes)
+
+app.use('/uploads',express.static('uploads'))
 
 // Start the server
 app.listen(port, () => {
