@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const vendorRoutes = require('./routes/vendorRoutes')
 const rgroupRoutes = require('./routes/rgroupRoutes')
+const productRoutes = require('./routes/productRoutes')
 // const bodyParser = require('body-parser')
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/vendor', vendorRoutes);
 
 // Restaurant Group routes
 app.use('/rgroup', rgroupRoutes);
+app.use('/product',productRoutes)
 
 // Start the server
 app.listen(port, () => {

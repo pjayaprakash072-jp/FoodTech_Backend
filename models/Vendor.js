@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const RGroup = require('./RestaurantGroup');
+const Product = require('./Product');
 
 const vendorschema = new mongoose.Schema(
     {
@@ -29,6 +30,13 @@ const vendorschema = new mongoose.Schema(
                 ref: 'RGroup' // References the RGroup collection
             }
         ]
+        // ,
+        // Products: [
+        //     {
+        //         type: mongoose.Schema.ObjectId,
+        //         ref: 'Product' // References the RGroup collection
+        //     }
+        // ]
     }
 )
 
