@@ -12,7 +12,7 @@ const app = express();
 // Load environment variables from .env file
 dotenv.config();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
