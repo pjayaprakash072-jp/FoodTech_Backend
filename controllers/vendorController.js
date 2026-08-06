@@ -96,4 +96,21 @@ const getallVendors = async (req,res)=>{
     }
 }
 
-module.exports = { vendorRegister, vendorLogin ,getallVendors};
+// retrieving a single vendor by id
+
+const singleVendor = async (req, res)=>{
+
+    const vendorid = req.params.id;
+    try {
+        const vendor = await Vendor.findById(vendorid)
+        // const vendor = await Vendor.findById(vendorid).populate('RGroup') //-  to get restaurant groups also
+        if(!vendor){
+            res.status(400).json({error: "vendor not found"})
+        }
+        res.status(200).json({vendor})
+    } catch (error) {
+        res.status(500).json({error: "Internalserver error"});
+        console.log("Error", error)
+    }
+}
+module.exports = { vendorRegister, vendorLogin ,getallVendors ,singleVendor};
