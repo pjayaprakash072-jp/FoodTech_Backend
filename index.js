@@ -49,5 +49,5 @@ app.get('/home', (req, res) => {
 
 // Default route
 app.get('/', (req, res) => {
-    res.send("<h1> welcome to Foodtech </h1>")
+    res.send("<h1> welcome to Foodtech By JAYAPRAKSH</h1>")
 })
