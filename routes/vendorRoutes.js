@@ -10,5 +10,7 @@ router.post('/register', vendorController.vendorRegister);
 // Route for vendor login
 router.post('/login', vendorController.vendorLogin);
 
+router.get('/all-vendors',vendorController.getallVendors)
+
 // Export the router
 module.exports = router;

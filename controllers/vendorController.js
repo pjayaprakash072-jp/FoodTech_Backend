@@ -84,4 +84,16 @@ const vendorLogin = async (req, res) => {
     }
 }
 
-module.exports = { vendorRegister, vendorLogin };
+const getallVendors = async (req,res)=>{
+
+    try {
+        
+        const vendors = await Vendor.find().populate("RGroup");
+        res.status(200).json({vendors});
+    } catch (error) {
+        res.status(500).json({error: "Internalserver error"});
+        console.log("Error", error)
+    }
+}
+
+module.exports = { vendorRegister, vendorLogin ,getallVendors};
