@@ -13,6 +13,7 @@ router.post('/login', vendorController.vendorLogin);
 router.get('/all-vendors',vendorController.getallVendors)
 
 router.get('/single-vendor/:id',vendorController.singleVendor)
+router.delete('/delete/:id',vendorController.deleteVendor)
 
 // Export the router
 module.exports = router;

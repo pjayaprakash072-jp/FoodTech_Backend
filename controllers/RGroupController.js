@@ -3,6 +3,8 @@ const Vendor = require('../models/Vendor')
 const multer = require('multer')
 const path = require('path')
 
+const Product = require('../models/Product')
+
 // Storage configuration for uploaded images
 const storage = multer.diskStorage({
 
@@ -69,7 +71,61 @@ const addRGroup = async (req, res) => {
     }
 }
 
+
+// const deleteRGroup = async (req,res)=>{
+//     try {
+//         const rgid = req.params.rgid;
+
+//         const rgroup = await RGroup.findByIdAndDelete(rgid);
+//         if(!rgroup){
+//             return res.status(400).json({message:"Restaurant group is not found"})
+//         }
+        
+//     } catch (error) {
+//         res.status(500).json({ error: "Internal server error" });
+//         console.log("Error", error);
+//     }
+// }
+
+const deleteRGroup = async (req, res) => {
+    try {
+        const rgid = req.params.rgid;
+
+        // Find the restaurant group
+        const rgroup = await RGroup.findById(rgid);
+
+        if (!rgroup) {
+            return res.status(404).json({
+                message: "Restaurant group not found"
+            });
+        }
+
+        // Delete all products belonging to this restaurant group
+        await Product.deleteMany({ RGroup: rgid });
+
+        // Remove the restaurant group ID from the vendor
+        await Vendor.findByIdAndUpdate(
+            rgroup.vendor[0],
+            {
+                $pull: { RGroup: rgid }
+            }
+        );
+
+        // Delete the restaurant group
+        await RGroup.findByIdAndDelete(rgid);
+
+        res.status(200).json({
+            message: "Restaurant group deleted successfully"
+        });
+
+    } catch (error) {
+        console.log("Error:", error);
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+};
 module.exports = {
     // Upload image first, then execute addRGroup controller
-    addRGroup: [upload.single('image'), addRGroup]
+    addRGroup: [upload.single('image'), addRGroup],deleteRGroup
 }

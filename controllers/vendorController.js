@@ -2,6 +2,8 @@ const Vendor = require('../models/Vendor');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const dotEnv = require('dotenv')
+const Product = require('../models/Product')
+const RGroup = require('../models/RestaurantGroup')
 
 dotEnv.config();
 
@@ -113,4 +115,46 @@ const singleVendor = async (req, res)=>{
         console.log("Error", error)
     }
 }
-module.exports = { vendorRegister, vendorLogin ,getallVendors ,singleVendor};
+//  OPTIONAL OF DELETING the VENDOR WITH ALL HIS/HER RGROUPS , PORDUCTS....
+// const RGroup = require('../models/RestaurantGroup');
+// const Product = require('../models/Product');
+
+const deleteVendor = async (req, res) => {
+    try {
+
+        const vendorid = req.params.id;
+
+        // Find the vendor
+        const vendor = await Vendor.findById(vendorid);
+
+        if (!vendor) {
+            return res.status(404).json({
+                message: "Vendor not found"
+            });
+        }
+
+        // Delete all products belonging to the vendor's restaurant groups
+        await Product.deleteMany({
+            RGroup: { $in: vendor.RGroup }
+        });
+
+        // Delete all restaurant groups of the vendor
+        await RGroup.deleteMany({
+            _id: { $in: vendor.RGroup }
+        });
+
+        // Delete the vendor
+        await Vendor.findByIdAndDelete(vendorid);
+
+        res.status(200).json({
+            message: "Vendor deleted successfully"
+        });
+
+    } catch (error) {
+        console.log("Error", error);
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+};
+module.exports = { vendorRegister, vendorLogin ,getallVendors ,singleVendor,deleteVendor};

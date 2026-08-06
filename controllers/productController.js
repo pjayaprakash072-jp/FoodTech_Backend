@@ -66,7 +66,9 @@ const getProductByRGroup = async(req,res)=>{
         }
 
         const RestairamtName = rgroup.RGroupName;
+
         const products = await Product.find({RGroup : rgid})
+
         res.status(200).json({RestairamtName,products})
         
     } catch (error) {
@@ -76,6 +78,66 @@ const getProductByRGroup = async(req,res)=>{
     }
 }
 
+// const Vendor = require('../models/Vendor');
+
+// const getProductByRGroup = async (req, res) => {
+//     try {
+//         const rgid = req.params.rgid;
+
+//         const rgroup = await RGroup.findById(rgid);
+
+//         if (!rgroup) {
+//             return res.status(404).json({
+//                 message: "Restaurant group is not found"
+//             });
+//         }
+
+//         const vendor = await Vendor.findById(rgroup.vendor[0]);
+
+//         const products = await Product.find({ RGroup: rgid });
+
+//         res.status(200).json({
+//             vendor: vendor.username,
+//             RGroup: rgroup.RGroupName,
+//             products: products.map(product => product.productName)
+//         });
+
+//     } catch (error) {
+//         console.log("Error", error);
+//         res.status(500).json({
+//             error: "Internal server error"
+//         });
+//     }
+// };
+
+const deleteProduct = async(req,res)=>{
+    try {
+        const pid = req.params.pid;
+
+        const delproduct = await Product.findByIdAndDelete(pid);
+        if(!delproduct){
+            return res.status(400).json({message:"No product found"});
+        }
+                // Remove the product id from the RGroup
+        await RGroup.findByIdAndUpdate(
+            delproduct.RGroup,
+            {
+                $pull: {
+                    Products: pid
+                }
+            }
+        );
+
+        res.status(200).json({
+            message: "Product deleted successfully"
+        });
+
+            
+    } catch (error) {
+        res.status(500).json({error:"Internal server erro"})
+        console.log("Error",error)
+    }
+}
 module.exports = {
-    addProduct: [upload.single("image"), addProduct],getProductByRGroup
+    addProduct: [upload.single("image"), addProduct],getProductByRGroup,deleteProduct
 }

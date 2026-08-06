@@ -36,8 +36,7 @@ app.use('/vendor', vendorRoutes);
 app.use('/rgroup', rgroupRoutes);
 app.use('/product',productRoutes)
 
-app.use('/uploads',express.static('uploads'))
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running at port ${port}`);
