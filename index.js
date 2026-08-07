@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const vendorRoutes = require('./routes/vendorRoutes')
 const rgroupRoutes = require('./routes/rgroupRoutes')
 const productRoutes = require('./routes/productRoutes')
+const cors = require('cors')
 // const bodyParser = require('body-parser')
 const path = require('path')
 
@@ -11,6 +12,7 @@ const app = express();
 
 // Load environment variables from .env file
 dotenv.config();
+app.use(cors())
 
 const port = process.env.PORT || 3000;
 
