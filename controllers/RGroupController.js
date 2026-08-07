@@ -4,6 +4,7 @@ const multer = require('multer')
 const path = require('path')
 
 const Product = require('../models/Product')
+const { error } = require('console')
 
 // Storage configuration for uploaded images
 const storage = multer.diskStorage({
@@ -42,7 +43,7 @@ const addRGroup = async (req, res) => {
         const vendor = await Vendor.findById(req.vendorId);
 
         if (!vendor) {
-            return res.status(404).json({ message: "vendor not found" });
+            return res.status(404).json({ error: "vendor not found" });
         }
 
         // Create a new Restaurant Group
@@ -63,7 +64,7 @@ const addRGroup = async (req, res) => {
         vendor.RGroup.push(savergroup);
         await vendor.save();
 
-        res.status(200).json({ message: "Restaurant group added successfully" });
+        res.status(201).json({ message: "Restaurant group added successfully" });
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
@@ -96,7 +97,7 @@ const deleteRGroup = async (req, res) => {
 
         if (!rgroup) {
             return res.status(404).json({
-                message: "Restaurant group not found"
+                error: "Restaurant group not found"
             });
         }
 
@@ -114,7 +115,7 @@ const deleteRGroup = async (req, res) => {
         // Delete the restaurant group
         await RGroup.findByIdAndDelete(rgid);
 
-        res.status(200).json({
+        res.status(204).json({
             message: "Restaurant group deleted successfully"
         });
 

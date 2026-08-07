@@ -1,3 +1,4 @@
+const { error } = require('console');
 const Product = require('../models/Product')
 const RGroup = require('../models/RestaurantGroup')
 const multer = require('multer')
@@ -38,7 +39,7 @@ const addProduct = async (req, res)=>{
 
         const rgroup = await RGroup.findById(rgroupid)
         if(!rgroup){
-            return res.status(400).json({error: "Restaruent group is not found"});
+            return res.status(404).json({error: "Restaruent group is not found"});
         }
 
         const product = new Product({
@@ -62,7 +63,7 @@ const getProductByRGroup = async(req,res)=>{
 
         const rgroup = await RGroup.findById(rgid);
         if(!rgroup){
-            return res.status(400).json({message:"Restaurant group is not found"});
+            return res.status(404).json({error:"Restaurant group is not found"});
         }
 
         const RestairamtName = rgroup.RGroupName;
@@ -116,7 +117,7 @@ const deleteProduct = async(req,res)=>{
 
         const delproduct = await Product.findByIdAndDelete(pid);
         if(!delproduct){
-            return res.status(400).json({message:"No product found"});
+            return res.status(404).json({error:"No product found"});
         }
                 // Remove the product id from the RGroup
         await RGroup.findByIdAndUpdate(
@@ -128,7 +129,7 @@ const deleteProduct = async(req,res)=>{
             }
         );
 
-        res.status(200).json({
+        res.status(204).json({
             message: "Product deleted successfully"
         });
 

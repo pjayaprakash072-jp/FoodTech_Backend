@@ -22,7 +22,7 @@ const vendorRegister = async (req, res) => {
         const vendorEmail = await Vendor.findOne({ email });
 
         if (vendorEmail) {
-            return res.status(400).json("email already exists");
+            return res.status(409).json("Vendor already exists");
         }
 
         // Encrypt the password before storing it
@@ -38,7 +38,7 @@ const vendorRegister = async (req, res) => {
         // Save vendor to the database
         await newVendor.save();
 
-        res.status(200).json({ message: "vendor registered successfully" });
+        res.status(201).json({ message: "vendor registered successfully" });
         console.log("vendor registered successfully");
 
     } catch (err) {
@@ -107,7 +107,7 @@ const singleVendor = async (req, res)=>{
         const vendor = await Vendor.findById(vendorid)
         // const vendor = await Vendor.findById(vendorid).populate('RGroup') //-  to get restaurant groups also
         if(!vendor){
-            res.status(400).json({error: "vendor not found"})
+            res.status(404).json({error: "vendor not found"})
         }
         res.status(200).json({vendor})
     } catch (error) {
@@ -129,7 +129,7 @@ const deleteVendor = async (req, res) => {
 
         if (!vendor) {
             return res.status(404).json({
-                message: "Vendor not found"
+                error: "Vendor not found"
             });
         }
 
@@ -146,7 +146,7 @@ const deleteVendor = async (req, res) => {
         // Delete the vendor
         await Vendor.findByIdAndDelete(vendorid);
 
-        res.status(200).json({
+        res.status(204).json({
             message: "Vendor deleted successfully"
         });
 
