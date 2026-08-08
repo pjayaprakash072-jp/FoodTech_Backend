@@ -73,9 +73,11 @@ const vendorLogin = async (req, res) => {
         );
 
         // Send success response with token
+        const vendorname = vendor.username;
         res.status(200).json({
             message: "vendor login successfully",
-            token
+            token,
+            vendorname
         });
 
         console.log(email);
