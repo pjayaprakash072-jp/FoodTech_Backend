@@ -64,7 +64,7 @@ const addRGroup = async (req, res) => {
         vendor.RGroup.push(savergroup);
         await vendor.save();
 
-        res.status(201).json({ message: "Restaurant group added successfully" });
+        res.status(201).json({ message: "Restaurant group added successfully" ,RGroupid : savergroup._id});
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });

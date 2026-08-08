@@ -17,6 +17,5 @@ router.post('/add-rgroup', verifyToken, RGroupController.addRGroup);
 // })
 router.delete('/delete/:rgid',RGroupController.deleteRGroup)
 
-
 // Export the router
 module.exports = router;
