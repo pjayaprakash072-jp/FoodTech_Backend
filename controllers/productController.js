@@ -133,7 +133,7 @@ const deleteProduct = async(req,res)=>{
                 }
             }
         }
-        await Product.findByIdAndDelete({pid});
+        await Product.findByIdAndDelete(pid);
         // Remove the product id from the RGroup
         await RGroup.findByIdAndUpdate(
             delproduct.RGroup,
