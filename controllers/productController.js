@@ -1,3 +1,4 @@
+const fs = require('fs')
 const { error } = require('console');
 const Product = require('../models/Product')
 const RGroup = require('../models/RestaurantGroup')
@@ -31,7 +32,7 @@ const upload = multer({
 
 const addProduct = async (req, res)=>{
     
-    try {
+    try {   
         const rgroupid = req.params.rgid;
         const {productName, price, category, bestSeller, description} = req.body;
 
@@ -115,11 +116,25 @@ const deleteProduct = async(req,res)=>{
     try {
         const pid = req.params.pid;
 
-        const delproduct = await Product.findByIdAndDelete(pid);
+        const delproduct = await Product.findById(pid);
         if(!delproduct){
             return res.status(404).json({error:"No product found"});
         }
-                // Remove the product id from the RGroup
+        // deleting the image from the uploads 
+        if(delproduct.image){
+            const imgpath = path.join(__dirname,'..','uploads',delproduct.image)
+            try{
+                await fs.promises.unlink(imgpath);
+                console.log("Image deleted:", delproduct.image);
+            } catch (fileError) {
+                // If image doesn't exist, don't stop product deletion
+                if (fileError.code !== 'ENOENT') {
+                    console.log("Image deletion error:", fileError);
+                }
+            }
+        }
+        await Product.findByIdAndDelete({pid});
+        // Remove the product id from the RGroup
         await RGroup.findByIdAndUpdate(
             delproduct.RGroup,
             {
@@ -129,7 +144,7 @@ const deleteProduct = async(req,res)=>{
             }
         );
 
-        res.status(204).json({
+        res.status(200).json({
             message: "Product deleted successfully"
         });
 

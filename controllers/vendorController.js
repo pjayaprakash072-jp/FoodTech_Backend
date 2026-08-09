@@ -73,11 +73,15 @@ const vendorLogin = async (req, res) => {
         );
 
         // Send success response with token
+        const firstrgid = vendor.RGroup[0];
         const vendorname = vendor.username;
+        const vendorid = vendor._id;
         res.status(200).json({
             message: "vendor login successfully",
             token,
-            vendorname
+            vendorname,
+            firstrgid,
+            vendorid
         });
 
         console.log(email);
