@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const dotEnv = require('dotenv')
 const Product = require('../models/Product')
 const RGroup = require('../models/RestaurantGroup')
+const sendEmail = require('../utils/sendEmail')
 
 dotEnv.config();
 
@@ -37,6 +38,23 @@ const vendorRegister = async (req, res) => {
 
         // Save vendor to the database
         await newVendor.save();
+        // Send welcome email
+        try {
+
+            await sendEmail(
+                email,
+                "Welcome to FoodTech",
+                "Your FoodTech account has been successfully created."
+            );
+
+            console.log("Welcome email sent successfully");
+
+        } catch (emailError) {
+
+            // Email failed, but registration succeeded
+            console.log("Email sending failed:", emailError);
+
+        }
 
         res.status(201).json({ message: "vendor registered successfully" });
         console.log("vendor registered successfully");
