@@ -1,0 +1,209 @@
+GitHub commit types  ;;;;;;;;;;;;;;;; LEARN ABOUT MORE COLORS  go to colors.co ,, better styles - go for shadow generators && search wanted generatores
+-------------------
+
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | Type      | When to Use                                  | Example                                              |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | feat      | Add a new feature                            | feat: add vendor registration                        |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | fix       | Fix a bug or issue                           | fix: resolve login validation issue                  |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | docs      | Update documentation only                    | docs: update README with setup instructions          |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | style     | Formatting/UI changes (no logic changes)     | style: improve login form styling                    |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | refactor  | Improve code without changing functionality  | refactor: simplify authentication logic              |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | perf      | Improve application performance              | perf: optimize product search query                  |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | test      | Add or update tests                          | test: add login API tests                            |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | chore     | Maintenance, configs, dependencies           | chore: install axios                                 |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | build     | Build system or dependency changes           | build: configure Vite build                          |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | ci        | CI/CD pipeline changes                       | ci: add GitHub Actions workflow                      |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+            | revert    | Undo a previous commit                       | revert: revert vendor authentication changes         |
+            +-----------+----------------------------------------------+------------------------------------------------------+
+
+
+
+================ HTTP STATUS CODES =================
+
++-----+----------------------+-----------------------------------+-------------------------------+
+|Code | Name                 | Simple Definition                 | Example                       |
++-----+----------------------+-----------------------------------+-------------------------------+
+|200  | OK                   | Request successful                | Login successful              |
+|201  | Created              | New data created                  | User registered               |
+|204  | No Content           | Success, but no data to return    | Product deleted               |
++-----+----------------------+-----------------------------------+-------------------------------+
+|400  | Bad Request          | Invalid request from client       | Missing required fields       |
+|401  | Unauthorized         | User not logged in                | JWT token missing             |
+|403  | Forbidden            | No permission to access           | Normal user opens admin page  |
+|404  | Not Found            | Requested resource not found      | Product ID not found          |
+|405  | Method Not Allowed   | HTTP method not supported         | GET used instead of POST      |
+|409  | Conflict             | Data already exists               | Duplicate email registration  |
+|422  | Unprocessable Entity | Validation failed                 | Invalid email format          |
++-----+----------------------+-----------------------------------+-------------------------------+
+|500  | Internal Server Error| Server-side error                 | Database connection failed    |
+|502  | Bad Gateway          | Invalid response from server      | Proxy server issue            |
+|503  | Service Unavailable  | Server temporarily unavailable    | Server under maintenance      |
+|504  | Gateway Timeout      | Server took too long to respond   | Backend timeout               |
++-----+----------------------+-----------------------------------+-------------------------------+
+
+============== MOST USED IN MERN ==============
+
+200 -> Data fetched successfully
+201 -> New document created
+400 -> Bad request (missing/invalid data)
+401 -> Token missing or invalid
+403 -> User has no permission
+404 -> Data not found
+409 -> Duplicate data
+500 -> Server error
+
+
+
+
+
+============================       Backend         =====================================================
+
+firm --> RestaurantGroup
+suby --> foodtech.
+
+1. Dipendencies
+------------
+    ->express
+    ->mongoose
+    ->nodemon
+    ->body-parser
+    ->dontenv
+    ->jwt token
+    ->bcrypt js
+    ->multer
+2. Database connection is done 
+
+3. API's creation
+    -> Models
+        -> vonder : username , email , password .  (best paractice is name starting with Capital and singular(in dateabse it will become teh Venders.))
+        -> RestaurantGroup : RGroupName , area, Category, region,offer,image.
+        -> Product : ProductName, price , Category, image, bestseller , description
+    -> Controllers
+        ->productController
+        ->RGroupController
+        ->vendorController
+    -> Routes
+        ->productRoutes
+        ->rgroupRoutes
+        ->vendorRoutes.
+
+
+https://foodtech-backend.onrender.com/ --> backend URL
+https://food-tech-frontend-five.vercel.app/--> frontend url
+
+
+API's
+=====
+1. Vendor Register
+https://foodtech-backend.onrender.com/vendor/register
+localhost:3000/vendor/register
+    {
+        "username": "ganesh",
+        "email": "ganesh@gmail.com",
+        "password": "ganesh"
+    }
+2. Vendor login
+https://foodtech-backend.onrender.com/vendor/login
+localhost:3000/vendor/login
+
+    {
+        "email": "ganesh@gmail.com",
+        "password": "ganesh"
+    }
+
+3. Get all vendors
+https://foodtech-backend.onrender.com/vendor/all-vendors
+localhost:3000/vendor/all-vendors
+
+
+4. Get single vendor
+https://foodtech-backend.onrender.com/vendor/single-vendor/(id-of-vendor-from-mongodb-atlas)6a74bcc70a2fae23cb988b7f
+localhost:3000/vendor/single-vendor/(id-of-vendor-from-mongodb-atlas)
+
+    {
+        "vendor": {
+            "_id": "6a74bcc70a2fae23cb988b7f",
+            "username": "ganesh",
+            "email": "ganesh@gmail.com",
+            "password": "$2b$10$481l8wdzE3LmobGWWwEslO9.3UDkOje5y2jd/OztIjtPc.6oBJjhS",
+            "RGroup": [],
+            "__v": 1
+        }
+    }
+5. Delete vendor 
+https://foodtech-backend.onrender.com/vendor/delete/(id-of-vendor-from-mongodb-atlas)6a74bcc70a2fae23cb988b7f
+localhost:3000/vendor/delete/(id-of-vendor-from-mongodb-atlas)
+
+    {
+        "message": "Vendor deleted successfully"
+    }
+
+6. Add Restaurant Group
+https://foodtech-backend.onrender.com/rgroup/add-rgroup
+localhost:3000/rgroup/add-rgroup
+    -> pass token
+        -> key : token , value : jwt from the login.
+    {
+        "RGroupName": "Bekary",
+        "area": "Andra pradesa",
+        "category": "veg",
+        "region": "Fast Food",
+        "offer": "50% off",
+        "image": "example.png"
+    }
+7. Delete Restaurant Group
+https://foodtech-backend.onrender.com/rgroup/delete/(id-of-RGroup-from-mongodb-atlas)6a74be170a2fae23cb988b80
+localhost:3000/rgroup/delete/(id-of-RGroup-from-mongodb-atlas)
+
+    {
+        "message": "Restaurant group deleted successfully"
+    }
+
+8. Add product  
+https://foodtech-backend.onrender.com/product/add-product/(id-of-RGroup-from-mongodb-atlas)6a74be170a2fae23cb988b80
+localhost:3000/product/add-product/(id-of-RGroup-from-mongodb-atlas)
+
+    {
+        "productName" : "Ice Cream",
+        "price":"300",
+        "category":["veg"],
+        "bestSeller":"true",
+        "description":"cool"
+    }
+
+
+9. Get all products.
+https://foodtech-backend.onrender.com/product/(id-of-RGroup-from-mongodb-atlas)6a74be170a2fae23cb988b80/products
+localhost:3000/product/(id-of-RGroup-from-mongodb-atlas)/products
+
+
+
+10. Delete product.
+https://foodtech-backend.onrender.com/product/delete/(id-of-product-from-mongodb-atlas)6a74bf800a2fae23cb988b84
+localhost:3000/product/delete/(id-of-product-from-mongodb-atlas)
+
+    {
+        "message": "Product deleted successfully"
+    }
+11.delete image
+
+
+
+
+
+
+
+
+
+
