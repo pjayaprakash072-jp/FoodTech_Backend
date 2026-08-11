@@ -1,76 +1,113 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+
 
 const RGroupSchema = new mongoose.Schema(
     {
-        // Name of the restaurant group
+
+        // ==========================================
+        // RESTAURANT NAME
+        // ==========================================
+
         RGroupName: {
             type: String,
             required: true,
             unique: true
         },
 
-        // Area where the restaurant group is located
+
+        // ==========================================
+        // AREA
+        // ==========================================
+
         area: {
             type: String,
             required: true
         },
 
-        // Food category (Veg or Non-Veg)
-        category: {
-            type: [
-                {
-                    type: String,
-                    enum: ['veg', 'non-veg']
-                }
-            ]
-        },
 
-        // Cuisine types offered
-        region: {
-            type: [
-                {
-                    type: String,
-                    enum: [
-                        "Bakery",
-                        "Fast Food",
-                        "Italian",
-                        "Chinese",
-                        "Indian",
-                        "Desserts"
-                    ]
-                }
-            ]
-        },
+        // ==========================================
+        // FOOD CATEGORY
+        // ==========================================
 
-        // Special offer or discount
+        category: [
+            {
+                type: String,
+                enum: ["veg", "non-veg"]
+            }
+        ],
+
+
+        // ==========================================
+        // CUISINE / REGION
+        // ==========================================
+
+        region: [
+            {
+                type: String,
+                enum: [
+                    "Bakery",
+                    "Fast Food",
+                    "Italian",
+                    "Chinese",
+                    "Indian",
+                    "Desserts"
+                ]
+            }
+        ],
+
+
+        // ==========================================
+        // OFFER
+        // ==========================================
+
         offer: {
             type: String
         },
 
-        // Restaurant image path or URL
+
+        // ==========================================
+        // RESTAURANT IMAGE
+        // ==========================================
+
         image: {
             type: String
         },
 
-        // References the vendor(s) who own this restaurant group
-        vendor: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'vendor'
-            }
-        ],
+
+        // ==========================================
+        // OWNER VENDOR
+        // ==========================================
+
+        vendor: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Vendor",
+            required: true
+        },
+
+
+        // ==========================================
+        // PRODUCTS
+        // ==========================================
+
         Products: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product'
+                ref: "Product"
             }
         ]
+
+    },
+
+    {
+        timestamps: true
     }
-    , {
-    timestamps: true
-});
+);
 
-const RGroup = mongoose.model('RGroup', RGroupSchema);
 
-// Export the RGroup model
+const RGroup = mongoose.model(
+    "RGroup",
+    RGroupSchema
+);
+
+
 module.exports = RGroup;

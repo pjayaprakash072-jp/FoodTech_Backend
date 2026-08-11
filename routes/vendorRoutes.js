@@ -1,19 +1,74 @@
-const vendorController = require('../controllers/vendorController')
-
-const express = require('express')
+const vendorController = require("../controllers/vendorController");
+const express = require("express");
 
 const router = express.Router();
 
-// Route for vendor registration
-router.post('/register', vendorController.vendorRegister);
+const verifyToken = require("../middlewares/verifyToken");
 
-// Route for vendor login
-router.post('/login', vendorController.vendorLogin);
 
-router.get('/all-vendors',vendorController.getallVendors)
+// ==========================================
+// VENDOR REGISTRATION
+// ==========================================
 
-router.get('/single-vendor/:id',vendorController.singleVendor)
-router.delete('/delete/:id',vendorController.deleteVendor)
+router.post(
+    "/register",
+    vendorController.vendorRegister
+);
 
-// Export the router
+
+// ==========================================
+// VENDOR LOGIN
+// ==========================================
+
+router.post(
+    "/login",
+    vendorController.vendorLogin
+);
+
+
+// ==========================================
+// GET ALL RESTAURANTS OF LOGGED-IN VENDOR
+// ==========================================
+
+router.get(
+    "/restaurants",
+    verifyToken,
+    vendorController.getVendorRestaurants
+);
+
+
+// ==========================================
+// GET ALL VENDORS
+// ==========================================
+
+router.get(
+    "/all-vendors",
+    vendorController.getallVendors
+);
+
+
+// ==========================================
+// GET SINGLE VENDOR
+// ==========================================
+
+router.get(
+    "/single-vendor/:id",
+    vendorController.singleVendor
+);
+
+
+// ==========================================
+// DELETE VENDOR
+// ==========================================
+
+router.delete(
+    "/delete/:id",
+    vendorController.deleteVendor
+);
+
+
+// ==========================================
+// EXPORT ROUTER
+// ==========================================
+
 module.exports = router;

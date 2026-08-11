@@ -26,7 +26,7 @@ const vendorschema = new mongoose.Schema(
         // Stores the IDs of Restaurant Groups owned by this vendor
         RGroup: [
             {
-                type: mongoose.Schema.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'RGroup' // References the RGroup collection
             }
         ]
