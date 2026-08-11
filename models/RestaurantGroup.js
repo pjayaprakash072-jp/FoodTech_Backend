@@ -66,7 +66,9 @@ const RGroupSchema = new mongoose.Schema(
             }
         ]
     }
-)
+    , {
+    timestamps: true
+});
 
 const RGroup = mongoose.model('RGroup', RGroupSchema);
 

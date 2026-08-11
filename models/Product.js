@@ -33,6 +33,9 @@ const productSchema = new mongoose.Schema(
                 ref: 'RGroup' // References the RGroup collection
             }
         ]
+    },
+        {
+        timestamps: true
     }
 )
 

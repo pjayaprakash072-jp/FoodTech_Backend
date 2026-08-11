@@ -1,132 +1,254 @@
-const RGroup = require('../models/RestaurantGroup')
-const Vendor = require('../models/Vendor')
-const multer = require('multer')
-const path = require('path')
+const RGroup = require("../models/RestaurantGroup");
+const Vendor = require("../models/Vendor");
+const Product = require("../models/Product");
 
-const Product = require('../models/Product')
-const { error } = require('console')
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-// Storage configuration for uploaded images
-const storage = multer.diskStorage({
 
-    // Folder where images will be stored
-    destination: function (req, file, cb) {
-        cb(null, "uploads/");
-    },
+// ==========================================
+// CLOUDINARY CONFIGURATION
+// ==========================================
 
-    // Generate a unique filename
-    filename: function (req, file, cb) {
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-        const uniqueName = Date.now() + path.extname(file.originalname);
 
-        cb(null, uniqueName);
+// ==========================================
+// MULTER + CLOUDINARY STORAGE
+// ==========================================
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+
+    params: {
+        folder: "foodtech/restaurant-groups",
+
+        allowed_formats: [
+            "jpg",
+            "jpeg",
+            "png",
+            "webp"
+        ],
+
+        transformation: [
+            {
+                width: 1000,
+                height: 1000,
+                crop: "limit"
+            }
+        ]
     }
-
 });
 
-// Configure multer with the storage settings
+
+// Multer configuration
 const upload = multer({
-    storage: storage
+    storage: storage,
+
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5 MB
+    }
 });
 
-// Controller to add a new Restaurant Group
+
+// ==========================================
+// ADD RESTAURANT GROUP
+// ==========================================
+
 const addRGroup = async (req, res) => {
+
     try {
 
-        // Get restaurant details from request body
-        const { RGroupName, area, category, region, offer } = req.body;
+        const {
+            RGroupName,
+            area,
+            category,
+            region,
+            offer
+        } = req.body;
 
-        // Get uploaded image filename (if any)
-        const image = req.file ? req.file.filename : undefined;
 
-        // Find the logged-in vendor
+        // Check vendor
         const vendor = await Vendor.findById(req.vendorId);
 
         if (!vendor) {
-            return res.status(404).json({ error: "vendor not found" });
+            return res.status(404).json({
+                error: "Vendor not found"
+            });
         }
 
-        // Create a new Restaurant Group
+
+        // Cloudinary image URL
+        const image = req.file
+            ? req.file.path
+            : undefined;
+
+
+        // Create Restaurant Group
         const rgroup = new RGroup({
+
             RGroupName,
             area,
             category,
             region,
             offer,
+
             image,
+
             vendor: vendor._id
         });
 
-        // Save Restaurant Group to the database
-        const savergroup = await rgroup.save();
 
-        // Add the Restaurant Group reference to the vendor
-        vendor.RGroup.push(savergroup);
+        // Save restaurant group
+        const savedRGroup = await rgroup.save();
+
+
+        // Add only ID to vendor
+        vendor.RGroup.push(savedRGroup._id);
+
         await vendor.save();
 
-        res.status(201).json({ message: "Restaurant group added successfully" ,RGroupid : savergroup._id});
 
-    } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-        console.log("Error", error);
-    }
-}
+        return res.status(201).json({
 
+            message: "Restaurant group added successfully",
 
-// const deleteRGroup = async (req,res)=>{
-//     try {
-//         const rgid = req.params.rgid;
+            RGroupid: savedRGroup._id,
 
-//         const rgroup = await RGroup.findByIdAndDelete(rgid);
-//         if(!rgroup){
-//             return res.status(400).json({message:"Restaurant group is not found"})
-//         }
-        
-//     } catch (error) {
-//         res.status(500).json({ error: "Internal server error" });
-//         console.log("Error", error);
-//     }
-// }
+            image: image
 
-const deleteRGroup = async (req, res) => {
-    try {
-        const rgid = req.params.rgid;
-
-        // Find the restaurant group
-        const rgroup = await RGroup.findById(rgid);
-
-        if (!rgroup) {
-            return res.status(404).json({
-                error: "Restaurant group not found"
-            });
-        }
-
-        // Delete all products belonging to this restaurant group
-        await Product.deleteMany({ RGroup: rgid });
-
-        // Remove the restaurant group ID from the vendor
-        await Vendor.findByIdAndUpdate(
-            rgroup.vendor[0],
-            {
-                $pull: { RGroup: rgid }
-            }
-        );
-
-        // Delete the restaurant group
-        await RGroup.findByIdAndDelete(rgid);
-
-        res.status(204).json({
-            message: "Restaurant group deleted successfully"
         });
 
     } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({
-            error: "Internal server error"
+
+        console.error("ADD RGROUP ERROR:", error);
+
+        return res.status(500).json({
+
+            error: "Internal server error",
+
+            message: error.message
+
         });
     }
 };
+
+
+// ==========================================
+// DELETE RESTAURANT GROUP
+// ==========================================
+
+const deleteRGroup = async (req, res) => {
+
+    try {
+
+        const rgid = req.params.rgid;
+
+
+        // Find restaurant group
+        const rgroup = await RGroup.findById(rgid);
+
+
+        if (!rgroup) {
+
+            return res.status(404).json({
+
+                error: "Restaurant group not found"
+
+            });
+        }
+
+
+        // Delete all products
+        // belonging to this restaurant group
+        await Product.deleteMany({
+            RGroup: rgid
+        });
+
+
+        // Remove restaurant group
+        // from vendor
+        await Vendor.findByIdAndUpdate(
+
+            rgroup.vendor,
+
+            {
+                $pull: {
+                    RGroup: rgid
+                }
+            }
+
+        );
+
+
+        // Delete restaurant group
+        await RGroup.findByIdAndDelete(rgid);
+
+
+        return res.status(200).json({
+
+            message: "Restaurant group deleted successfully"
+
+        });
+
+    } catch (error) {
+
+        console.error("DELETE RGROUP ERROR:", error);
+
+        return res.status(500).json({
+
+            error: "Internal server error",
+
+            message: error.message
+
+        });
+    }
+};
+
+
+// ==========================================
+// MULTER ERROR HANDLER
+// ==========================================
+
+const uploadRGroupImage = (req, res, next) => {
+
+    upload.single("image")(req, res, function (error) {
+
+        if (error) {
+
+            console.error("IMAGE UPLOAD ERROR:", error);
+
+            return res.status(500).json({
+
+                error: "Image upload failed",
+
+                message: error.message
+
+            });
+        }
+
+        next();
+
+    });
+};
+
+
+// ==========================================
+// EXPORT
+// ==========================================
+
 module.exports = {
-    // Upload image first, then execute addRGroup controller
-    addRGroup: [upload.single('image'), addRGroup],deleteRGroup
-}
+
+    addRGroup: [
+        uploadRGroupImage,
+        addRGroup
+    ],
+
+    deleteRGroup
+
+};

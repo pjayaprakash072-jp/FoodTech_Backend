@@ -1,55 +1,57 @@
-const express = require('express')
-const dotenv = require('dotenv')
-const mongoose = require('mongoose')
-const vendorRoutes = require('./routes/vendorRoutes')
-const rgroupRoutes = require('./routes/rgroupRoutes')
-const productRoutes = require('./routes/productRoutes')
-const cors = require('cors')
-// const bodyParser = require('body-parser')
-const path = require('path')
+const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const vendorRoutes = require("./routes/vendorRoutes");
+const rgroupRoutes = require("./routes/rgroupRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 
-// Load environment variables from .env file
+// Load environment variables
 dotenv.config();
-app.use(cors())
 
 const port = process.env.PORT || 3000;
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// MongoDB connection
+mongoose
+    .connect(process.env.MONGO_URI)
     .then(() => {
-        console.log("mongodb connected successfully!")
+        console.log("MongoDB connected successfully!");
     })
     .catch((err) => {
-        console.log("Error : ", err)
-    })
+        console.error("MongoDB connection error:", err);
+    });
 
-// Middleware to parse JSON data
-app.use(express.json());
-
-// Alternatively, body-parser can also be used
-// app.use(bodyParser.json())
-
-// Vendor routes
-app.use('/vendor', vendorRoutes);
-
-// Restaurant Group routes
-app.use('/rgroup', rgroupRoutes);
-app.use('/product',productRoutes)
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running at port ${port}`);
-})
+// Routes
+app.use("/vendor", vendorRoutes);
+app.use("/rgroup", rgroupRoutes);
+app.use("/product", productRoutes);
 
 // Home route
-app.get('/home', (req, res) => {
-    res.send("welcome to user")
-})
+app.get("/home", (req, res) => {
+    res.send("Welcome to user");
+});
 
-// Default route
-app.get('/', (req, res) => {
-    res.send("<h1> welcome to Foodtech By JAYAPRAKSH</h1>")
-})
+// Root route
+app.get("/", (req, res) => {
+    res.send("<h1>Welcome to Foodtech By JAYAPRAKASH</h1>");
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({
+        error: "Route not found"
+    });
+});
+
+// Start server
+app.listen(port, () => {
+    console.log(`Server is running at port ${port}`);
+});
